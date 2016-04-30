@@ -9,8 +9,8 @@ class KinectTracker {
   int[] depth;
   PImage display;
   boolean moving;
-    boolean moving2;
-      boolean moving3;
+  boolean moving2;
+  boolean moving3;
   Kinect2 kinect2;
   
   KinectTracker(PApplet pa) {
@@ -109,7 +109,6 @@ class KinectTracker {
   boolean isMoving3(){
     return moving3;
   }
-
 
   void display() {
     PImage img = kinect2.getDepthImage();
