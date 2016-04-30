@@ -4,7 +4,7 @@ import themidibus.*;
 MidiBus midiport;
 boolean play = false;
 
-// Store the previouse mouse position to check for movement
+// Store the previous mouse position to check for movement
 int previousMouseX = 0;
 int previousMouseY = 0;
 
