@@ -7,7 +7,7 @@ Github Repo for library ( + installation instructions):
 https://github.com/shiffman/OpenKinect-for-Processing
 
 TO DO LIST:
-- [ ] Add wooden support to installation
+- [X] Add wooden support to installation
 - [ ] Work on music tracks
 - [ ] Flix blob velocity
 - [ ] Separate blob tracking by area
