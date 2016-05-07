@@ -69,12 +69,16 @@ void mouseMoved() {
     addForce(mouseNormX, mouseNormY, mouseVelX, mouseVelY);
 }
 
+float blobX;
+
 void oscEvent(OscMessage theOscMessage) {  
     float mouseNormX = theOscMessage.get(0).floatValue();
     float mouseNormY = theOscMessage.get(1).floatValue();
-    float mouseVelX = theOscMessage.get(2).floatValue();
-    float mouseVelY = theOscMessage.get(3).floatValue();
+    float mouseVelX = (theOscMessage.get(2).floatValue())/100; //dropping the velocity by a bunch
+    float mouseVelY = (theOscMessage.get(3).floatValue())/100;
     addForce(mouseNormX, mouseNormY, mouseVelX, mouseVelY);
+    
+    blobX = theOscMessage.get(0).floatValue();
 }
 
 void draw() {
@@ -117,9 +121,18 @@ void addForce(float x, float y, float dx, float dy) {
         drawColor = color(hue, 1, 1);
         colorMode(RGB, 1);  
 
-        fluidSolver.rOld[index]  += red(drawColor) * colorMult;
-        fluidSolver.gOld[index]  += green(drawColor) * colorMult;
-        fluidSolver.bOld[index]  += blue(drawColor) * colorMult;
+        fluidSolver.rOld[index]  += 0;//red(drawColor) * colorMult;
+        fluidSolver.gOld[index]  += 0;//green(drawColor) * colorMult;
+        fluidSolver.bOld[index]  += 0;//blue(drawColor) * colorMult;
+        
+        //setting the colours based on column
+         if(blobX < 0.3333){ //left
+         fluidSolver.rOld[index]  = 255; 
+       } else if(blobX > 0.3333 && blobX < 0.6666){ //middle
+         fluidSolver.gOld[index]  = 255;
+       } else{//right
+         fluidSolver.bOld[index]  = 255;
+       }
 
         particleSystem.addParticles(x * width, y * height, 50);
         fluidSolver.uOld[index] += dx * velocityMult;
