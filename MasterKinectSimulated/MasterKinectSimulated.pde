@@ -16,15 +16,23 @@ OscP5 oscP5Location1;
 NetAddress location2;
 //Image which will contain each frame of the video
 PImage videoinput;
+// An array of integers we will write to, pass into the blob array and then re-write
+// {x, y, w, h}
+float[] previousBlob = {
+    0, 0, 0, 0
+};
+// An array which will contain arrays of blob information
+// {{x, y, w, h}, {x, y, w, h}, {x, y, w, h}, ...}
+float[][] previousBlobsArray = new float[30][4];
 
 void setup() {
     size(480, 500);
     video = new Movie(this, "simulation.avi");
     video.loop();  
     video.play();
-    videoinput = createImage(480, 500, RGB);
+    videoinput = createImage(480, 450, RGB);
 
-    blobdetection = new BlobDetection(480, 500);
+    blobdetection = new BlobDetection(480, 450);
     blobdetection.setPosDiscrimination(true);
     blobdetection.setThreshold(0.3f);
 
@@ -45,7 +53,7 @@ void draw() {
     //extra white space at the top
     if (video.available()) {
         video.read();
-        videoinput.copy(video, 0, 80, 480, 420, 0, 80, 480, 420);
+        videoinput.copy(video, 0, 30, 480, 420, 0, 30, 480, 420);
     }
     //Appy the blur algorithm to the video so that tiny blobs don't cause problems
     blurAlgorithm(videoinput, 10);
@@ -54,31 +62,37 @@ void draw() {
     //Draw the blobs and their corrosponding edges
     drawBlobsAndEdges(true, true, blobdetection);
 
-    /* Here is where we can do whatever we want. At the moment it is set up to iterate
-        over every blob in the frame, get it's dimensions, and send that over OSC. If you 
-        simultaneously run the MSAFluid sketch container within this folder it will work...
-        ...to a degree. It currently goes crazy, but atleast the OSC communication works! */
-    Blob b;
-    for (int n = 0; n < blobdetection.getBlobNb (); n++) {
-        b = blobdetection.getBlob(n);
-        float blobx = b.x;
-        float bloby = b.y;
-        float blobw = b.w;
-        float blobh = b.h;
 
-        //Comment the OSC stuff out if you're only interested in MIDI stuff, not the visuals
-        OscMessage myMessage = new OscMessage("/blob");
-        myMessage.add(blobx);
-        myMessage.add(bloby);
-        myMessage.add(blobw);
-        myMessage.add(blobh);
-        oscP5Location1.send(myMessage, location2); 
-        
-        /* We can also do MIDI stuff in here, but I have not yet found a good way to track
-            blobs so we can apply the same effect or whatver it used last time. So at the moment
-            each blob can only be identified by it's index number in the array, which is recomputed
-            at every frame. */
-        //midiport.sendControllerChange(0, 1, int((b.x * 480) * 0.264));
-    }
+
+
+
+    //    /* Here is where we can do whatever we want. At the moment it is set up to iterate
+    //        over every blob in the frame, get it's dimensions, and send that over OSC. If you 
+    //        simultaneously run the MSAFluid sketch container within this folder it will work...
+    //        ...to a degree. It currently goes crazy, but atleast the OSC communication works! */
+    //    Blob b;
+    //    for (int n = 0; n < blobdetection.getBlobNb (); n++) {
+    //        if (n == 0){
+    //        b = blobdetection.getBlob(n);
+    //        //println((b.x * width) + " " + (b.y * height));
+    //        float blobx = b.x;
+    //        float bloby = b.y;
+    //        float blobw = b.w;
+    //        float blobh = b.h;
+    //
+    //        //Comment the OSC stuff out if you're only interested in MIDI stuff, not the visuals
+    //        OscMessage myMessage = new OscMessage("/blob");
+    //        myMessage.add(blobx);
+    //        myMessage.add(bloby);
+    //        myMessage.add(blobw);
+    //        myMessage.add(blobh);
+    //        oscP5Location1.send(myMessage, location2); 
+    //        }
+    //        /* We can also do MIDI stuff in here, but I have not yet found a good way to track
+    //            blobs so we can apply the same effect or whatver it used last time. So at the moment
+    //            each blob can only be identified by it's index number in the array, which is recomputed
+    //            at every frame. */
+    //        //midiport.sendControllerChange(0, 1, int((b.x * 480) * 0.264));
+    //    }
 }
 

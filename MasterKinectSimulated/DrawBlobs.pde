@@ -4,12 +4,18 @@ void drawBlobsAndEdges(boolean drawBlobs, boolean drawEdges, BlobDetection blobd
     noFill();
     Blob b;
     EdgeVertex eA, eB;
-    
+  
     for (int n = 0; n < blobdetection.getBlobNb(); n++) {
         
         b = blobdetection.getBlob(n);
-        
-        if (b != null && b.h > 0.05) {
+        checkSimilarity();
+        previousBlob[0] = b.x;
+        previousBlob[1] = b.y;
+        previousBlob[2] = b.w;
+        previousBlob[3] = b.h;
+        previousBlobsArray[n] = previousBlob;
+            
+        if (b != null && b.h > 0) {
             
             if (drawEdges) {
                 strokeWeight(3);
@@ -28,6 +34,9 @@ void drawBlobsAndEdges(boolean drawBlobs, boolean drawEdges, BlobDetection blobd
                 rect(b.xMin * width, b.yMin * height, b.w * width, b.h *
                     height);
             }
+//            textSize(22);
+//            fill(0, 102, 153, 51);
+//            text(n, b.x * width, b.y * height); 
         }
     }
 }
