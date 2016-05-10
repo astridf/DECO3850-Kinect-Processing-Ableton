@@ -18,4 +18,19 @@
  "You sure know your way around spandex",
  "Spandex, more like Spandawesome!",
  "I would favourite this tweet if my human overloards programmed me to be able to"
+ "crickey, thats some good painting there mate",
+ "gr8 p8 m8",
+ "tip top showing there chap, really gave it a good go!",
+ "holy moley, I really like this one",
+ "Look Lassey, someone did a cool painting with MozART",
+ "This is so beautiful, it makes me question my very existance",
+ "00010100 ERROR...TwitterBot cannot compute this much beauty. SHUTTING DOWN",
+ "This picture is so pretty, it melted my cold steel robot heart",
+ "You're like the Van Gogh of painting, oh wait Van Gogh was a painting.",
+ "Twitter Rules! Facebook Drools! This picture sure doesn't drool though",
+ "Y is for 'You rock', 'U is for yUo rock', O is for yuO 'rock'!",
+ "I cannot think of a pun, my robot brain is not capable of humor, nice painting though",
+ "10/10 would look at picture again",
+ "So good it basically smacked the spit out of my mouth",
+ "Props to you Mr Magoo, nice picture"
 //just add new things under this
