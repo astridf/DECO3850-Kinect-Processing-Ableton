@@ -3,6 +3,8 @@ import processing.video.*;
 import themidibus.*;
 import oscP5.*;
 import netP5.*;
+import java.util.Collections;
+ArrayList<Integer> instruments = new ArrayList<Integer>();
 
 //Create the midibus port
 MidiBus midiport;
@@ -39,10 +41,14 @@ void setup() {
     midiport.list();
     //May need to change this for your computer, look at the outputs from the
     //line above, and change the '2' to the port you want
-    midiport = new MidiBus(this, -1, 2);
+    midiport = new MidiBus(this, -1, 3);
     //Do not change the following ports unless you also change them in the MSAFluid sketch
     oscP5Location1 = new OscP5(this, 5001);
     location2 = new NetAddress("127.0.0.1", 6001);
+    
+    instruments.add(0);
+    instruments.add(1);
+    instruments.add(2);
 }
 
 void draw() {
@@ -61,38 +67,7 @@ void draw() {
     blobdetection.computeBlobs(videoinput.pixels);
     //Draw the blobs and their corrosponding edges
     drawBlobsAndEdges(true, true, blobdetection);
-
-
-
-
-
-    //    /* Here is where we can do whatever we want. At the moment it is set up to iterate
-    //        over every blob in the frame, get it's dimensions, and send that over OSC. If you 
-    //        simultaneously run the MSAFluid sketch container within this folder it will work...
-    //        ...to a degree. It currently goes crazy, but atleast the OSC communication works! */
-    //    Blob b;
-    //    for (int n = 0; n < blobdetection.getBlobNb (); n++) {
-    //        if (n == 0){
-    //        b = blobdetection.getBlob(n);
-    //        //println((b.x * width) + " " + (b.y * height));
-    //        float blobx = b.x;
-    //        float bloby = b.y;
-    //        float blobw = b.w;
-    //        float blobh = b.h;
-    //
-    //        //Comment the OSC stuff out if you're only interested in MIDI stuff, not the visuals
-    //        OscMessage myMessage = new OscMessage("/blob");
-    //        myMessage.add(blobx);
-    //        myMessage.add(bloby);
-    //        myMessage.add(blobw);
-    //        myMessage.add(blobh);
-    //        oscP5Location1.send(myMessage, location2); 
-    //        }
-    //        /* We can also do MIDI stuff in here, but I have not yet found a good way to track
-    //            blobs so we can apply the same effect or whatver it used last time. So at the moment
-    //            each blob can only be identified by it's index number in the array, which is recomputed
-    //            at every frame. */
-    //        //midiport.sendControllerChange(0, 1, int((b.x * 480) * 0.264));
-    //    }
+    
+     sendMIDI(blobdetection);
 }
 

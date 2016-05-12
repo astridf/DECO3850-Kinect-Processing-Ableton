@@ -19,7 +19,16 @@ void drawBlobsAndEdges(boolean drawBlobs, boolean drawEdges, BlobDetection blobd
             
             if (drawEdges) {
                 strokeWeight(3);
-                stroke(0, 255, 0);
+                if (b.x * width < 160){
+                    stroke(0, 0, 255);
+                }
+                else if (b.x * width >= 160 && b.x * width < 320){
+                    stroke(0, 255, 0);
+                }
+                else{
+                    stroke(255, 0, 0);
+                }
+                
                 for (int m = 0; m < b.getEdgeNb(); m++) {
                     eA = b.getEdgeVertexA(m);
                     eB = b.getEdgeVertexB(m);
