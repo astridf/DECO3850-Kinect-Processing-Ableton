@@ -1,15 +1,5 @@
+
 /***********************************************************************
- * 
- * Demo of the MSAFluid library (www.memo.tv/msafluid_for_processing) controlled by TUIO
- * Move mouse to add dye and forces to the fluid.
- * Alternatively use a TUIO tracker/server to control remotely (www.tuio.org)
- * 
- * Click mouse to turn off fluid rendering seeing only particles and their paths.
- * Demonstrates feeding input into the fluid and reading data back (to update the particles).
- * Also demonstrates using Vertex Arrays for particle rendering.
- * 
-/***********************************************************************
- 
  Copyright (c) 2008, 2009, Memo Akten, www.memo.tv
  *** The Mega Super Awesome Visuals Company ***
  * All rights reserved.
@@ -41,25 +31,16 @@
 
 import msafluid.*;
 import javax.media.opengl.GL2;
-
 final float FLUID_WIDTH = 120;
-
 float invWidth, invHeight;    // inverse of screen dimensions
 float aspectRatio, aspectRatio2;
-
 MSAFluidSolver2D fluidSolver;
-
 ParticleSystem particleSystem;
-
 PImage imgFluid;
-
 boolean drawFluid = true;
 
 void setup() {
-    size(960, 640, P3D);    // use OPENGL rendering for bilinear filtering on texture
-//    size(screen.width * 49/50, screen.height * 49/50, OPENGL);
- //   hint( ENABLE_OPENGL_4X_SMOOTH );    // Turn on 4X antialiasing
-
+    size(displayWidth, displayHeight, P3D);
     invWidth = 1.0f/width;
     invHeight = 1.0f/height;
     aspectRatio = width * invHeight;
@@ -115,10 +96,6 @@ void keyPressed() {
     case 'r': 
         renderUsingVA ^= true; 
         println("renderUsingVA: " + renderUsingVA);
-        break;
-    
-    case 'e': 
-        drawFluid ^= true;
         break;
     }
 }

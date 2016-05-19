@@ -49,7 +49,6 @@ class Particle {
         mass = random(0.1, 1);
     }
 
-
     void update() {
         // only update if particle is visible
         if(alpha == 0) return;
@@ -81,39 +80,31 @@ class Particle {
             y = height;
             vy *= -1;
         }
-
         // hackish way to make particles glitter when the slow down a lot
         if(vx * vx + vy * vy < 1) {
             vx = random(-1, 1);
             vy = random(-1, 1);
         }
-
         // fade out a bit (and kill if alpha == 0);
         alpha *= 0.999;
         if(alpha < 0.1) alpha = 0;
-
     }
-
 
     void updateVertexArrays(int i, FloatBuffer posBuffer, FloatBuffer colBuffer) {
         int vi = i * 2;
         posBuffer.put(vi++, x - vx);
         posBuffer.put(vi++, y - vy);
-
         int ci = i * 4;
         colBuffer.put(ci++, alpha);
         colBuffer.put(ci++, alpha);
         colBuffer.put(ci++, alpha);
-
     }
-
 
     void drawOldSchool(GL2 gl) {
         gl.glColor3f(alpha, alpha, alpha);
         gl.glVertex2f(x-vx, y-vy);
         gl.glVertex2f(x, y);
     }
-
 }
 
 

@@ -1,5 +1,4 @@
 
-
 //Array of arrays containing the numbers for the mapped controller change thingos
 int[][] midi1 = {{1,2,3}, {4,5,6}, {7,8,9} };
 
@@ -11,9 +10,6 @@ void sendMIDI(BlobDetection blobdetection) {
         //CHANGE THIS TO WHATEVER CHANNEL WE ARE USING
          int channel = 1;
 
-         //midiport.sendControllerChange(channel, 10, 100);
-
-         
          //If there is one blob, get the first effect from the first instrument in the random order
          if (blobdetection.getBlobNb() == 1){
              midiport.sendControllerChange(channel, midi1[instruments.get(0)][2], 127);             

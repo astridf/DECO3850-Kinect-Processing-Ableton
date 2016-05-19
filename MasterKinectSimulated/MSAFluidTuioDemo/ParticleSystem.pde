@@ -45,21 +45,16 @@ void fadeToColor(GL2 gl, float r, float g, float b, float speed) {
     gl.glEnd();
 }
 
-
 class ParticleSystem {
     FloatBuffer posArray;
     FloatBuffer colArray;
-
     final static int maxParticles = 5000;
     int curIndex;
-
     Particle[] particles;
-
     ParticleSystem() {
         particles = new Particle[maxParticles];
         for(int i=0; i<maxParticles; i++) particles[i] = new Particle();
         curIndex = 0;
-
         posArray = BufferUtil.newFloatBuffer(maxParticles * 2 * 2);// 2 coordinates per point, 2 points per particle (current and previous)
         colArray = BufferUtil.newFloatBuffer(maxParticles * 3 * 2);
     }
@@ -78,7 +73,6 @@ class ParticleSystem {
         gl.glEnable(GL2.GL_LINE_SMOOTH);        // make points round
         gl.glLineWidth(1);
 
-
         if(renderUsingVA) {
             for(int i=0; i<maxParticles; i++) {
                 if(particles[i].alpha > 0) {
@@ -88,10 +82,8 @@ class ParticleSystem {
             }    
             gl.glEnableClientState(GL2.GL_VERTEX_ARRAY);
             gl.glVertexPointer(2, GL2.GL_FLOAT, 0, posArray);
-
             gl.glEnableClientState(GL2.GL_COLOR_ARRAY);
             gl.glColorPointer(3, GL2.GL_FLOAT, 0, colArray);
-
             gl.glDrawArrays(GL2.GL_LINES, 0, maxParticles * 2);
         } 
         else {
@@ -104,7 +96,6 @@ class ParticleSystem {
             }
             gl.glEnd();
         }
-
         gl.glDisable(GL2.GL_BLEND);
         endPGL();
     }
@@ -114,13 +105,11 @@ class ParticleSystem {
         for(int i=0; i<count; i++) addParticle(x + random(-15, 15), y + random(-15, 15));
     }
 
-
     void addParticle(float x, float y) {
         particles[curIndex].init(x, y);
         curIndex++;
         if(curIndex >= maxParticles) curIndex = 0;
     }
-
 }
 
 

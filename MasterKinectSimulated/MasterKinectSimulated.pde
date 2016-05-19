@@ -21,14 +21,6 @@ OscP5 oscP5Location1;
 NetAddress location2;
 //Image which will contain each frame of the video
 PImage videoinput;
-// An array of integers we will write to, pass into the blob array and then re-write
-// {x, y, w, h}
-float[] previousBlob = {
-    0, 0, 0, 0
-};
-// An array which will contain arrays of blob information
-// {{x, y, w, h}, {x, y, w, h}, {x, y, w, h}, ...}
-float[][] previousBlobsArray = new float[30][4];
 
 void setup() {
     size(480, 500);

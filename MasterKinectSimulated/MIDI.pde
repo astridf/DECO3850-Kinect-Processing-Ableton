@@ -10,9 +10,6 @@ void sendMIDI(BlobDetection blobdetection) {
         //CHANGE THIS TO WHATEVER CHANNEL WE ARE USING
          int channel = 1;
 
-         //midiport.sendControllerChange(channel, 10, 100);
-
-         
          //If there is one blob, get the first effect from the first instrument in the random order
          if (blobdetection.getBlobNb() == 1){
              midiport.sendControllerChange(channel, midi1[instruments.get(0)][2], 127);             

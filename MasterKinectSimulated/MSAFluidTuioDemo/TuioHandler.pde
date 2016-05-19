@@ -54,7 +54,6 @@ void updateTUIO() {
             vx = random(-tuioStationaryForce, tuioStationaryForce);
             vy = random(-tuioStationaryForce, tuioStationaryForce);
         }
-
         addForce(tcur.getX(), tcur.getY(), vx, vy);
     }
 
@@ -63,9 +62,3 @@ void updateTUIO() {
         tuioDoubleTap = false;
     }
 }
-
-
-
-
-
-
