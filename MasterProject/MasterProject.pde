@@ -4,35 +4,37 @@ import themidibus.*;
 import oscP5.*;
 import netP5.*;
 
+//Need collections so that we can use the inbuilt shuffle() method
+import java.util.Collections;
+//Array of integers 0, 1, 2 used to represent track 1, 2, and 3 of music
+ArrayList<Integer> instruments = new ArrayList<Integer>();
+
+//Create the midibus port
 MidiBus midiport;
 KinectData kinect;
-    //BlobDetection class
-    BlobDetection blobdetection;
+//Create instance of blobdetection
+BlobDetection blobdetection;
+//Set up osc location
 OscP5 oscP5Location1;
+//Set up osc net address
 NetAddress location2;
 //Image which will contain each frame of the video
 PImage displayKinect;
-// An array of integers we will write to, pass into the blob array and then re-write
-// {x, y, w, h}
-float[] previousBlob = {
-    0, 0, 0, 0
-};
-// An array which will contain arrays of blob information
-// {{x, y, w, h}, {x, y, w, h}, {x, y, w, h}, ...}
-float[][] previousBlobsArray = new float[30][4];
+
 
 void setup() {
     size(480, 420);
     kinect = new KinectData(this);
-   
-    
-    midiport = new MidiBus(this, -1, 4);
-    oscP5Location1 = new OscP5(this, 5001);
-    location2 = new NetAddress("127.0.0.1", 6001);
+    midiport = new MidiBus(this, -1, 3);
+    oscP5Location1 = new OscP5(this, 3334);
+    location2 = new NetAddress("127.0.0.1", 3333);
+    instruments.add(0);
+    instruments.add(1);
+    instruments.add(2);
 }
 
 void draw() {
-    background(255);
+    background(0);
     kinect.display();
 }
 

@@ -3,7 +3,10 @@ import processing.video.*;
 import themidibus.*;
 import oscP5.*;
 import netP5.*;
+
+//Need collections so that we can use the inbuilt shuffle() method
 import java.util.Collections;
+//Array of integers 0, 1, 2 used to represent track 1, 2, and 3 of music
 ArrayList<Integer> instruments = new ArrayList<Integer>();
 
 //Create the midibus port
@@ -40,12 +43,12 @@ void setup() {
 
     midiport.list();
     //May need to change this for your computer, look at the outputs from the
-    //line above, and change the '2' to the port you want
+    //line above, and change the third parameter to the port you want
     midiport = new MidiBus(this, -1, 3);
     //Do not change the following ports unless you also change them in the MSAFluid sketch
-    oscP5Location1 = new OscP5(this, 5001);
-    location2 = new NetAddress("127.0.0.1", 6001);
-    
+    oscP5Location1 = new OscP5(this, 3334);
+    location2 = new NetAddress("127.0.0.1", 3333);
+
     instruments.add(0);
     instruments.add(1);
     instruments.add(2);
@@ -65,9 +68,12 @@ void draw() {
     blurAlgorithm(videoinput, 10);
     //Compute the blobs for the current frame after the blur has been applied
     blobdetection.computeBlobs(videoinput.pixels);
+
     //Draw the blobs and their corrosponding edges
+    //Only really required for testing, since we don't actually have to SEE the blobs to know they are being registered
     drawBlobsAndEdges(true, true, blobdetection);
-    
-     sendMIDI(blobdetection);
+
+    //Call the function that handles all the MIDI, and pass it the instance of blobdetection
+    sendMIDI(blobdetection);
 }
 

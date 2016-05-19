@@ -1,71 +1,77 @@
+int frameNum = 0;
+float[][] sendBlobs;
+OscBundle oSCBundle;
+void checkSimilarity() {
 
-void checkSimilarity(){
-    
     Blob b;
-    
-    for (int n = 0; n < blobdetection.getBlobNb(); n++) {
-        
+    float[] foundBlob = {
+        0, 0, 0, 0
+    };
+    sendBlobs = new float[blobdetection.getBlobNb()][4];
+    oSCBundle = new OscBundle();
+    OscMessage oSCMessage2 = null;
+    OscMessage oSCMessage4 = null;
+    OscMessage oSCMessage5 = null;
+    OscMessage oSCMessage = new OscMessage("/tuio/2Dcur");
+    oSCMessage.add("alive");
+    //Iterate through every blob detected
+    for (int n = 0; n < blobdetection.getBlobNb (); n++) {
+        oSCMessage.add(n);
+        //Get the current blob
         b = blobdetection.getBlob(n);
+
         float currentX = b.x;
         float currentY = b.y;
         float currentWidth = b.w;
         float currentHeight = b.w;
-        
-        for (int i = 0; i < previousBlobsArray.length; i++) {
-            
-            float previousX = previousBlobsArray[i][0];
-            float previousY = previousBlobsArray[i][1];
-            float previousWidth = previousBlobsArray[i][2];
-            float previousHeight = previousBlobsArray[i][3];
-            
-            if (isSimilarX(previousX * width, currentX * width) && isSimilarY(previousY*height, currentY*height)){
-                if (isSimilarW(previousWidth * width, currentWidth * width) && isSimilarH(previousHeight*height, currentHeight*height)){
-                    OscMessage myMessage = new OscMessage("/blob");
-                    myMessage.add(currentX);
-                    myMessage.add(currentY );
-                    myMessage.add(currentX - previousX);
-                    myMessage.add(currentY - previousY);
-                    oscP5Location1.send(myMessage, location2); 
-                }
-            }
+
+        for (int i = 0; i < 5; i++) {
+            if (n == 0) {
+                oSCMessage2 = new OscMessage("/tuio/2Dcur");
+                println(currentX);
+                oSCMessage2.add("set");
+                oSCMessage2.add(0);
+                oSCMessage2.add(currentX);
+                oSCMessage2.add(currentY);
+                oSCMessage2.add(0f);
+                oSCMessage2.add(0f);
+                oSCMessage2.add(float(2));
+            } else if (n == 1) {
+                oSCMessage4 = new OscMessage("/tuio/2Dcur");
+                oSCMessage4.add("set");
+                oSCMessage4.add(1);
+                oSCMessage4.add(currentX);
+                oSCMessage4.add(currentY);
+                oSCMessage4.add(0f);
+                oSCMessage4.add(0f);
+                oSCMessage4.add(float(2));
+            } else if (n == 2) {
+                oSCMessage5 = new OscMessage("/tuio/2Dcur");
+                oSCMessage5.add("set");
+                oSCMessage5.add(2);
+                oSCMessage5.add(currentX);
+                oSCMessage5.add(currentY);
+                oSCMessage5.add(0f);
+                oSCMessage5.add(0f);
+                oSCMessage5.add(float(2));
+            }      
         }
     }
+    oSCBundle.add(oSCMessage);
+    if (oSCMessage2 != null) {
+        oSCBundle.add(oSCMessage2);
+    }
+    if (oSCMessage4 != null) {
+        oSCBundle.add(oSCMessage4);
+    }
+    if (oSCMessage5 != null) {
+        oSCBundle.add(oSCMessage5);
+    }
+    OscMessage oSCMessage3 = new OscMessage("/tuio/2Dcur");
+    oSCMessage3.add("fseq");
+    oSCMessage3.add(frameNum);
+    oSCBundle.add(oSCMessage3);
+    oscP5Location1.send(oSCBundle, location2);
+    frameNum++;
 }
 
-int similarity = 60;
-
-boolean isSimilarX(float x1, float x2){
-    if ((x1 - similarity) < x2 && x2 < (x1 + similarity)){
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-boolean isSimilarY(float y1, float y2){
-    if ((y1 - similarity) < y2 && y2 < (y1 + similarity)){
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-boolean isSimilarW(float w1, float w2){
-    if ((w1 - similarity) < w2 && w2 < (w1 + similarity)){
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-boolean isSimilarH(float h1, float h2){
-    if ((h1 - similarity) < h2 && h2 < (h1 + similarity)){
-        return true;
-    }
-    else {
-        return false;
-    }
-}

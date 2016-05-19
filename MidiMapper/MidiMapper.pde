@@ -16,8 +16,8 @@ void draw() {
 }
 // http://www.ccarh.org/courses/253/handout/controllers/
 void mapping() {
-    int channel = 0;
-    int number = 1;
+    int channel = 1;
+    int number = 3;
     int i;
     for (i = 0; i <= 127; i++) {
         println(i);

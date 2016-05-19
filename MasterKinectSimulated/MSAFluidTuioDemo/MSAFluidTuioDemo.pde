@@ -1,4 +1,13 @@
-
+/***********************************************************************
+ * 
+ * Demo of the MSAFluid library (www.memo.tv/msafluid_for_processing) controlled by TUIO
+ * Move mouse to add dye and forces to the fluid.
+ * Alternatively use a TUIO tracker/server to control remotely (www.tuio.org)
+ * 
+ * Click mouse to turn off fluid rendering seeing only particles and their paths.
+ * Demonstrates feeding input into the fluid and reading data back (to update the particles).
+ * Also demonstrates using Vertex Arrays for particle rendering.
+ * 
 /***********************************************************************
  
  Copyright (c) 2008, 2009, Memo Akten, www.memo.tv
@@ -17,19 +26,25 @@
  *       may be used to endorse or promote products derived from this software
  *       without specific prior written permission.
  *
- * ***********************************************************************/
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" 
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS 
+ * OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+ * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE. 
+ *
+ * ***********************************************************************/ 
 
 import msafluid.*;
 import javax.media.opengl.GL2;
-import oscP5.*;
-import netP5.*;
-
-OscP5 oscP5Location2;
-NetAddress location1;
 
 final float FLUID_WIDTH = 120;
 
-float invWidth, invHeight;
+float invWidth, invHeight;    // inverse of screen dimensions
 float aspectRatio, aspectRatio2;
 
 MSAFluidSolver2D fluidSolver;
@@ -41,10 +56,10 @@ PImage imgFluid;
 boolean drawFluid = true;
 
 void setup() {
-    //size(960, 640, P3D); 
-    size(displayWidth, displayHeight, P3D);
-    oscP5Location2 = new OscP5(this, 6001);
-    location1 = new NetAddress("127.0.0.1", 5001);
+    size(960, 640, P3D);    // use OPENGL rendering for bilinear filtering on texture
+//    size(screen.width * 49/50, screen.height * 49/50, OPENGL);
+ //   hint( ENABLE_OPENGL_4X_SMOOTH );    // Turn on 4X antialiasing
+
     invWidth = 1.0f/width;
     invHeight = 1.0f/height;
     aspectRatio = width * invHeight;
@@ -52,13 +67,16 @@ void setup() {
 
     // create fluid and set options
     fluidSolver = new MSAFluidSolver2D((int)(FLUID_WIDTH), (int)(FLUID_WIDTH * height/width));
-    fluidSolver.enableRGB(true).setFadeSpeed(0.003).setDeltaT(0.5).setVisc(0.0001);
+    fluidSolver.enableRGB(true).setFadeSpeed(0.005).setDeltaT(0.5).setVisc(0.00008);
 
     // create image to hold fluid picture
     imgFluid = createImage(fluidSolver.getWidth(), fluidSolver.getHeight(), RGB);
 
     // create particle system
     particleSystem = new ParticleSystem();
+
+    // init TUIO
+    initTUIO();
 }
 
 
@@ -67,26 +85,16 @@ void mouseMoved() {
     float mouseNormY = mouseY * invHeight;
     float mouseVelX = (mouseX - pmouseX) * invWidth;
     float mouseVelY = (mouseY - pmouseY) * invHeight;
-    addForce(mouseNormX, mouseNormY, mouseVelX, mouseVelY);
-}
 
-float blobX;
-
-void oscEvent(OscMessage theOscMessage) {  
-    float mouseNormX = theOscMessage.get(0).floatValue();
-    float mouseNormY = theOscMessage.get(1).floatValue();
-    float mouseVelX = (theOscMessage.get(2).floatValue()); //dropping the velocity by a bunch
-    float mouseVelY = (theOscMessage.get(3).floatValue());
     addForce(mouseNormX, mouseNormY, mouseVelX, mouseVelY);
-    
-    blobX = theOscMessage.get(0).floatValue();
 }
 
 void draw() {
+    updateTUIO();
     fluidSolver.update();
 
-    if (drawFluid) {
-        for (int i=0; i<fluidSolver.getNumCells (); i++) {
+    if(drawFluid) {
+        for(int i=0; i<fluidSolver.getNumCells(); i++) {
             int d = 2;
             imgFluid.pixels[i] = color(fluidSolver.r[i] * d, fluidSolver.g[i] * d, fluidSolver.b[i] * d);
         }  
@@ -95,20 +103,33 @@ void draw() {
     } 
 
     particleSystem.updateAndDraw();
+
 }
 
 void mousePressed() {
     drawFluid ^= true;
 }
 
+void keyPressed() {
+    switch(key) {
+    case 'r': 
+        renderUsingVA ^= true; 
+        println("renderUsingVA: " + renderUsingVA);
+        break;
+    }
+}
 
+
+
+// add force and dye to fluid, and create particles
 void addForce(float x, float y, float dx, float dy) {
-    float speed = dx * dx  + dy * dy * aspectRatio2;
-    if (speed > 0) {
-        if (x<0) x = 0; 
-        else if (x>1) x = 1;
-        if (y<0) y = 0; 
-        else if (y>1) y = 1;
+    float speed = dx * dx  + dy * dy * aspectRatio2;    // balance the x and y components of speed with the screen aspect ratio
+
+    if(speed > 0) {
+        if(x<0) x = 0; 
+        else if(x>1) x = 1;
+        if(y<0) y = 0; 
+        else if(y>1) y = 1;
 
         float colorMult = 5;
         float velocityMult = 30.0f;
@@ -122,20 +143,11 @@ void addForce(float x, float y, float dx, float dy) {
         drawColor = color(hue, 1, 1);
         colorMode(RGB, 1);  
 
-        fluidSolver.rOld[index]  += 0;//red(drawColor) * colorMult;
-        fluidSolver.gOld[index]  += 0;//green(drawColor) * colorMult;
-        fluidSolver.bOld[index]  += 0;//blue(drawColor) * colorMult;
-        
-        //setting the colours based on column
-         if(blobX < 0.3333){ //left
-         fluidSolver.rOld[index]  = 255; 
-       } else if(blobX > 0.3333 && blobX < 0.6666){ //middle
-         fluidSolver.gOld[index]  = 255;
-       } else{//right
-         fluidSolver.bOld[index]  = 255;
-       }
+        fluidSolver.rOld[index]  += red(drawColor) * colorMult;
+        fluidSolver.gOld[index]  += green(drawColor) * colorMult;
+        fluidSolver.bOld[index]  += blue(drawColor) * colorMult;
 
-        particleSystem.addParticles(x * width, y * height, 50);
+        particleSystem.addParticles(x * width, y * height, 30);
         fluidSolver.uOld[index] += dx * velocityMult;
         fluidSolver.vOld[index] += dy * velocityMult;
     }
