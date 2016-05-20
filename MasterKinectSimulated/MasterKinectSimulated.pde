@@ -36,7 +36,7 @@ void setup() {
     midiport.list();
     //May need to change this for your computer, look at the outputs from the
     //line above, and change the third parameter to the port you want
-    midiport = new MidiBus(this, -1, 3);
+    midiport = new MidiBus(this, -1, 5);
     //Do not change the following ports unless you also change them in the MSAFluid sketch
     oscP5Location1 = new OscP5(this, 3334);
     location2 = new NetAddress("127.0.0.1", 3333);

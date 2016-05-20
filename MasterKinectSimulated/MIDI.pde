@@ -1,6 +1,6 @@
 
 //Array of arrays containing the numbers for the mapped controller change thingos
-int[][] midi1 = {{1,2,3}, {4,5,6}, {7,8,9} };
+int[][] midi1 = {{1,2,10}, {4,5,11}, {7,8,12} };
 
 void sendMIDI(BlobDetection blobdetection) {
 

@@ -5,7 +5,8 @@ MidiBus midi;
 
 void setup() {
     size(200, 200);
-    midi = new MidiBus(this, 0, 3);
+    midi.list();
+    midi = new MidiBus(this, 0, 5);
     //Map from 0 to 127 just once
     mapping();
 }
@@ -17,7 +18,7 @@ void draw() {
 // http://www.ccarh.org/courses/253/handout/controllers/
 void mapping() {
     int channel = 1;
-    int number = 3;
+    int number = 12;
     int i;
     for (i = 0; i <= 127; i++) {
         println(i);

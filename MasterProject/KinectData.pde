@@ -2,7 +2,7 @@
 class KinectData {
     
     // Depth threshold
-    int depthThreshold = 800;
+    int depthThreshold = 1700;
     
     // Depth data
     int[] depth;

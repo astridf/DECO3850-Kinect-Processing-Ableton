@@ -24,6 +24,8 @@ void checkSimilarity() {
         float currentY = b.y;
         float currentWidth = b.w;
         float currentHeight = b.w;
+        
+        currentY = (((currentY * 420f) - 150f) /270f);
 
         oSCMessage2 = new OscMessage("/tuio/2Dcur");
         oSCMessage2.add("set");
