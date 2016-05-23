@@ -72,8 +72,27 @@ void sendMIDI(BlobDetection blobdetection) {
          midiport.sendControllerChange(1, midi1[instruments.get(2)][2], 30); 
     }
 }
+//currentY = (((currentY * 420f) - 150f) /270f);
+
 
 int calculateMIDIvalue(float x, float y){
+    x = x * 480f;
+    y = (y * 420f) - 150f;
     //Map the x and y values to a new value between 0 and 127
-    return int(map((x * 480) + (y * 420), 0, 900, 0, 127));
+    if (x < 160){
+        println(int(map(x + y, 0, 580, 0, 127)));
+        return int(map(x + y, 0, 580, 0, 127));
+    }
+    else if (x >= 160 && x < 320) {
+        println(int(map(x + y, 160, 740, 0, 127)));
+        return int(map(x + y, 160,740, 0, 127));
+    }
+    else if (x >= 320 && x <= 480) {
+        println(int(map(x + y, 320, 900, 0, 127)));
+        return int(map(x + y, 320, 900, 0, 127));
+    }
+    else{
+        return 0;
+    }
+//    return int(map((x * 480) + (y * 420), 0, 900, 0, 127));
 }
